@@ -3,14 +3,13 @@ const path = "./Products.json";
 
 class ProductManager {
   constructor () {
-    const usuaFile = this.getProducts();
-    this.path =  usuaFile
+    this.path =  path
   }
 
   async getProducts() {
     try {
-      if (fs.existsSync(path)) {
-        const products = await fs.promises.readFile(path, "utf-8");
+      if (fs.existsSync(this.path)) {
+        const products = await fs.promises.readFile(this.path, "utf-8");
         const productsJSON = JSON.parse(products);
         return productsJSON;
 
@@ -20,14 +19,13 @@ class ProductManager {
     } catch (error) {
       console.log(error);
     }
-    return this.path
   }
   
   async addProduct(products) {
     try {
       const { title, description, price, thumbnail, code, stock } = products;
       const producto = {
-        id: this.#generarId(),
+        id: await this.#generarId(),
         title,
         description,
         price,
@@ -37,8 +35,8 @@ class ProductManager {
       };
           const productFile = await this.getProducts()
           productFile.push(producto)
-          // this.path.push(producto);
-          await fs.promises.writeFile(path, JSON.stringify(productFile))
+          this.path.push(producto);
+          await fs.promises.writeFile(this.path, JSON.stringify(productFile))
     } catch (error) {
       console.log(error);
     }
@@ -55,36 +53,45 @@ class ProductManager {
   }
   
   async updateProduct(id, object){
-    try {
-      const {newtitle, newdescription, newprice, newthumbnail, newcode, newstock } = object
-      const editProduct = await this.path.find(prod =>prod.id === id)
-      if(editProduct){
-        const newObject = {
-          ...editProduct,
-          id:this.#generarId(),
-          title:newtitle,
-          description:newdescription,
-          price:newprice,
-          thumbnail:newthumbnail,
-          code:newcode,
-          stock: newstock,
-        }
-        const productFile = await this.getProducts()
-        productFile.push(newObject)
-        // await fs.promises.appendFile(path, JSON.stringify(productFile))
-      }
-      
-    } catch (error) {
-      console.log(error)
+    let copyProduct = await this.getProducts()
+    let escanerCopy = copyProduct.find(product => product.id === id)
+    const {title, description, price, thumbnail, code, stock } = object
+    if(code && copyProduct.some(prod => prod.code === code)){
+      return 400
+    }else if(code){
+      escanerCopy.code = code
     }
+    if(title){
+      escanerCopy.title = title
+    }
+    if(description){
+      escanerCopy.description = description
+    }
+    if(price){
+      escanerCopy.price = price
+    }
+    if(thumbnail){
+      escanerCopy.thumbnail = thumbnail
+    }
+    if(stock){
+      escanerCopy.stock = stock
+    }
+    await fs.promises.writeFile(this.path, JSON.stringify(copyProduct))
   }
-  #evaluarProduct(idProduc){
-    return this.path.find(prod => prod.id === idProduc)
+
+  async deleteProductById(id){
+    const deletetFile = await this.getProducts()
+    const deleteProduct = deletetFile.filter(prod => prod.id !== id)
+    await fs.promises.writeFile(this.path, JSON.stringify(deleteProduct))
   }
-  #generarId() {
-    const count = this.path.length;
-    const idIncre = count > 0 ? this.path[count - 1].id + 1 : 1;
-    return idIncre;
+ 
+  async #generarId() {
+    let id = 1 
+    const countFile = await this.getProducts()
+    if(countFile.length !== 0){
+      id = countFile[countFile.length -1].id + 1
+    }
+    return id
   }
   
 }
@@ -114,8 +121,9 @@ async function prueba(){
     // manager.addProduct(product1)
     // manager.addProduct(product2)
     // manager.getProductById(1)
-    console.log(await manager.updateProduct(1, product1))
-    // manager.addProduct(product2)
+    // manager.deleteProductById(3)
+    // console.log(await manager.updateProduct(1, product1))
 }
 
-prueba()
+
+ prueba()
