@@ -57,6 +57,7 @@ producto1.addProduct('camisa', 'camisa negra', 234, 'cam.png', 2365, 3)
 producto1.addProduct('cam', 'ca negra', 2234, 'cam.spng', 12134, 3)
 producto1.addProduct('camisa', 'camisa negra', 'cam.png', 12134, 3)
 
+console.log(producto1.getProducts()) 
 producto1.getProductById(1)
-console.log(producto1)
+// console.log(producto1)
 
