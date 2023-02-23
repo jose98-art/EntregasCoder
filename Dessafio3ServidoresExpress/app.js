@@ -2,7 +2,7 @@ import express from 'express'
 import Productos from './productManager.js'
 
 const app = express()
-const manager = new Productos('productManager.json')
+const manager = new Productos()
 
 //Mostramos todos los productos o por un limite por filtro
 app.get('/products', async (req,res)=>{
