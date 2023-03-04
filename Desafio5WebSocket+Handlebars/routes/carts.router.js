@@ -1,30 +1,28 @@
 import {Router} from "express";
-import Carrito from "../ProductManager.js"
+import {carrito} from '../app.js';
+import { managerProd } from "../app.js";
 
 const router = Router()
-const managerCarrito = new Carrito()
 
 
 router.get('/',async(req,res)=>{
-    const prodCart = await managerCarrito.getProductsCart()
-    res.json(prodCart)
+    res.json(carrito)
 })
 
 router.get('/:idCart',async(req,res)=>{
     const {idCart} = req.params
-    const prodCart = await managerCarrito.getProductsCart()
-    const prodCartId = prodCart.find(u => u.id === Number(idCart))
+    const prodCartId = carrito.find(u => u.id === Number(idCart))
     res.json(prodCartId)
 })
 
 router.post('/',async(req,res)=>{
-    const prodCart = await managerCarrito.createCart()
+    const prodCart = await managerProd.createCart()
     res.status(200).json(prodCart)
 })
 
 router.post('/:cid/product/:pid',async(req,res)=>{
     const {cid,pid} = req.params
-    const prodCreate = await managerCarrito.addCart(Number(cid), Number(pid))
+    const prodCreate = await managerProd.addCart(Number(cid), Number(pid))
     res.json({message:'producto agreado con exito', prodCreate})
 })
 

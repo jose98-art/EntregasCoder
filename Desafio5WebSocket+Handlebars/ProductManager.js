@@ -1,55 +1,88 @@
 import fs from 'fs'
+import { __dirname } from './utils.js';
 
-const path = "./products/products.json";
-const cartPath = "./products/productsCart.json"
+// const path = "./products/products.json";
+// const cartPath = "./products/productsCart.json"
 
-export default class ProductManager {
+export  class ProductManager {
   constructor () {
-    this.path =  path
-    this.cartPath = cartPath
+    this.path =  __dirname+"/products/products.json"
+    this.cartPath = __dirname+"products/productsCart.json"
     this.cartProd = []
   }
 
   async getProducts() {
-    try {
       if (fs.existsSync(this.path)) {
-        const products = await fs.promises.readFile(this.path, "utf-8");
-        const productsJSON = JSON.parse(products);
-        return productsJSON;
+        let productos = await fs.promises.readFile(this.path, "utf-8");
+        return JSON.parse(productos)
       } else {
         return [];
       }
-    } catch (error) {
-      console.log(error);
-    }
   }
-  
-  async addProduct(products) {
-    try {
-      const { title, description, code, price,status, stock,category, thumbnail } = products;
-      const producto = {
-        id: await this.#generarIdProd(),
+
+
+
+  async addProduct(title, description,code, precio,status =true,stock,category, thumbnail = []) {
+    const productsFile = await this.getProducts()
+    if (!(title, description,code,precio,stock,category)) {
+      // res.status(400).send("Debe ingresar todos los campos correspondientes");
+      return 401
+
+    } else if (productsFile.length !== 0 && productsFile.some((product) => product.code === code)) {
+      // res.status(400).send("EL CODIGO NO PUEDE SER IGUAL")
+      return 402
+    }
+
+
+    else {
+      let product = {
         title,
         description,
         code,
-        price,
+        precio,
         status,
-        stock,
-        category,
         thumbnail,
+        category,
+        stock,
+        id: await this.#generarIdProd(),
       };
-      if(!title || !description || !code || !price || !status || !stock || !category ){
-        return 'Todos los campos son obligatorios'
-      }else{
-        const productFile = await this.getProducts()
-        productFile.push(producto)
-        await fs.promises.writeFile(this.path, JSON.stringify(productFile))
-        return {message:'Tu producto se ha generado con exito',producto}
-      }
-    } catch (error) {
-      console.log(error);
+      productsFile.push(product);
+     await fs.promises.writeFile(this.path, JSON.stringify(productsFile))
+      // res.status(200).send("Producto agregado con exito")
+
+
+      //Control de salida de datos
+      // console.log(JSON.parse(fs.readFileSync(this.path, "utf-8" )))
     }
   }
+  
+  // async addProduct(products) {
+  //   try {
+  //     const { title, description, code, price,status, stock,category, thumbnail } = products;
+  //     const producto = {
+  //       id: await this.#generarIdProd(),
+  //       title,
+  //       description,
+  //       code,
+  //       price,
+  //       status,
+  //       stock,
+  //       category,
+  //       thumbnail,
+  //     };
+  //     // if(!title || !description || !code || !price || !status || !stock || !category ){
+  //     //   return 'Todos los campos son obligatorios'
+  //     // }else{
+  //       const productFile = await this.getProducts()
+  //       productFile.push(producto)
+  //       await fs.promises.writeFile(this.path, JSON.stringify(productFile))
+  //       console.log('manager',producto)
+  //       return {message:'Tu producto se ha generado con exito',producto}
+  //     // }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 
   async getProductById(id) {
     const productFile = await this.getProducts()
@@ -60,7 +93,7 @@ export default class ProductManager {
   async updateProduct(id, object){
     let copyProduct = await this.getProducts()
     let escanerCopy = copyProduct.find(product => product.id === id)
-    const {title, description, price, thumbnail, code, stock } = object
+    const {title, description, precio, thumbnail, code, stock } = object
     if(code && copyProduct.some(prod => prod.code === code)){
       return 400
     }else if(code){
@@ -73,7 +106,7 @@ export default class ProductManager {
       escanerCopy.description = description
     }
     if(price){
-      escanerCopy.price = price
+      escanerCopy.precio = precio
     }
     if(thumbnail){
       escanerCopy.thumbnail = thumbnail
@@ -156,10 +189,46 @@ export default class ProductManager {
     }
     return id
   }
+
+  // manejo con el servidor
+
+  async listToShow (id){
+    let products = await this.getProducts();
+    if(products.length === 0){
+      return products
+    }
+
+    else if(id){
+      let products = await this.getProducts();
+      let productsListFiltered = products.filter(u => u.id !== id);
+      let productsList = productsListFiltered.map((product) =>{
+        let productSimplificado = {
+          title: product.title,
+          price: product.precio
+        }
+        return productSimplificado
+     } )
+     return productsList
+    }
+    else{
+      let productsList = [];
+      productsList = products.map((product) =>{
+        let productSimplificado = {
+          title: product.title,
+          price: product.precio
+        }
+        return productSimplificado
+    }     
+      )
+      
+      return productsList
+    }
+    
+  }
   
 }
 
-// //-------
+// -------
 // const manager = new ProductManager()
 // console.log(await manager.getProducts())
 
