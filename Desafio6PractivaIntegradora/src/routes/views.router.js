@@ -7,4 +7,8 @@ router.get('/',(req,res)=>{
     res.render('socket')
 })
 
+router.get('/agregar',(req,res)=>{
+    res.render('realTimeProducts')
+})
+
 export default router 

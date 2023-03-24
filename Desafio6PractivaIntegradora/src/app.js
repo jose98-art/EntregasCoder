@@ -26,7 +26,7 @@ app.set('view engine', 'handlebars')
 app.set('views',__dirname+'/views')
 
 //ruta raiz
-app.use('/',viewsRouter)
+app.use('/products',viewsRouter)
 
 
 const httpServer = app.listen(8080,(req,res)=>{
@@ -53,6 +53,22 @@ socketServer.on('connection',socket=>{
     socket.on('mensaje',info=>{
         mensaje.push(info)
         socketServer.emit('chat',mensaje)
+    })
+
+
+    socket.on("prod",async (productosAdd)=>{
+        let prodForm = await managerProd.listToShow();
+        prodForm.push(productosAdd)
+        socketServer.emit('productoFromForm',prodForm)
+
+        
+    });
+
+
+    socket.on("prodDelete",async (prod) =>{
+        const {id} = prod;
+        let prodServer = await managerProd.listToShow(id);
+        socketServer.emit("prodDeletelist", prodServer)
     })
 })
 
