@@ -1,0 +1,14 @@
+{{#if usersDocuments}}
+{{#each usersDocuments}}
+
+<p>Producto: {{this.title}} </p>
+
+
+{{/each}}
+
+{{else}}
+<h2>NO HAY PRODUCTOS REGISTRADOS</h2>
+<button onclick="location.href='/users/logout'">Logout</button> 
+{{/if}}
+
+<script src="/socket.io/socket.io.js"></script>
