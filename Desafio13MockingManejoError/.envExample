@@ -1,0 +1,10 @@
+URI =
+PORT =
+# para enviar emails nodemailer
+GMAIL_PASSWORD = 
+GMAIL_USER = 
+
+# para enivar mensajes twilio
+TWILIO_PHONE_NUMBER = 
+TWILIO_SID = 
+TWILIO_AUTH_TOKEN = 
