@@ -1,0 +1,83 @@
+paths:
+  /api/carts:
+    post: 
+      summary: post one products in cart
+      tags:
+        - cartProducts
+      responses: 
+        "200": 
+          description: All products in cart
+          # content:
+          #   application/json:
+          #     schemas:
+          #       type: Array
+          #       items:
+          #         $ref: '#/components/shemas/Product'
+        "500":
+          description: Server error
+        "400":
+          description: Missing data
+
+  /api/carts/{idCart}:
+    get: 
+      summary: Get products by id
+      tags:
+        - cartProducts
+      parameters:
+        - name: idCart
+          in: path
+          description: Product identifier
+      responses: 
+        "200": 
+          description: One products
+          content:
+            application/json:
+              schemas:
+                  # $ref: '#/components/schemas/productos'
+              example:
+                id: ljs948sp
+                title: control
+                description: control para TV
+                code: jslj9499
+                precio: 900
+                status: true
+                category: Electronica
+                thumnails: pag web de la img
+        "500":
+          description: Server error
+        "400":
+          description: Missing data
+  #ProductsCart
+  components:
+    schemas:
+      Product:
+        type: object
+        properties:
+          id:
+            type: string
+          title:
+            type: string
+          description:
+            type: string
+          code:
+            type: string
+          precio:
+            type: number
+          status:
+            type: boolean
+          stock:
+            type: number
+          category:
+            type: string
+          thumbanils:
+            type: string
+          example:
+            id: ljs948sp
+            title: control
+            description: control para TV
+            code: jslj9499
+            precio: 900
+            status: true
+            stock: 3
+            category: Electronica
+            thumnails: pag web de la img
