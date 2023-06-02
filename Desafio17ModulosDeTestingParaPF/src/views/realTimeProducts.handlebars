@@ -1,0 +1,59 @@
+<h1>Agrega tus productos</h1>
+
+<form id="formulario" action="/api/products" method="post">
+  Title:<input class="form" type="text" name="title" id="title" required />
+  Description:
+  <input
+    class="form"
+    type="text"
+    name="description"
+    id="description"
+    required
+  />
+  Code:
+  <input class="form" type="text" name="code" id="code" required />
+  precio:
+  <input class="form" type="number" name="precio" id="precio" required />
+  Status:
+  <input class="form" type="text" name="status" id="status" />
+   Stock:
+  <input type="number" class="form" name="stock" id="stock">
+  Category:
+  <input class="form" type="text" name="category" id="category" required />
+  Thumbnails:
+  <input class="form" type="text" name="thumbnails" id="thumbnails" />
+  <input type="submit" value="ENVIAR" />
+</form>
+
+<h2>Eliminar un producto</h2>
+ID:
+<form id="deleteForm" action="/api/products" method="delete">
+  <input type="number" name="pID" id="pID" />
+  <input type="submit" value="eliminar" />
+</form>
+
+<h2>Todos los productos</h2>
+<p>Tus productos son las siguientes</p>
+<p id="list">
+
+{{!-- 
+{{#if creatProd}}
+{{#each creatProd}}
+<ul>
+    <li> Nombre: def {{title}}</li>
+    <li> Description: {{description}}</li>
+    <li> Codigo: {{code}}</li>
+    <li> Precio: {{price}}</li>
+    <li> Status: {{status}}</li>
+    <li> Categoria: {{category}}</li>
+</ul>
+{{/each}}
+{{else}}
+<h2>no hay usuarios registrados</h2>
+
+{{/if}} --}}
+
+</p>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="js/index.js"></script>
